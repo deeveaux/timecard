@@ -1,10 +1,10 @@
-# 🏗️ Construction Time Card App
+# # 🏗️ Construction Time Card App
 
 A dead-simple, mobile-first time tracking app for construction workers that dumps data directly to Google Sheets.
 
 ## Features
 
-- **One-tap time entry** with common shift presets
+- **One-tap time entry** with preset 8-hour shifts
 - **Remembers worker's name** (saved locally)
 - **Auto-calculates hours** as times are entered
 - **Works on any smartphone** (no app download needed)
@@ -92,7 +92,16 @@ Once hosted, workers just need to:
    - iPhone: Share → Add to Home Screen
    - Android: Menu (3 dots) → Add to Home Screen
 3. **Enter their name once** (it's remembered)
-4. **Tap, tap, submit!**
+4. **Tap a shift or enter times manually, then submit!**
+
+### How It Works
+
+The app has two ways to enter time:
+
+1. **Quick Select** – Tap one of four preset 8-hour shifts (highlighted section with yellow border)
+2. **Manual Entry** – Use the time pickers to enter custom start/end times
+
+Either method auto-calculates total hours. Workers add optional notes, then hit the big yellow Submit button.
 
 ---
 
@@ -111,17 +120,27 @@ Edit the `<select>` options in `index.html`:
 </select>
 ```
 
-### Change Quick Time Buttons
+### Change Quick Shift Buttons
 
-Edit the button values in `index.html`:
+The app includes four preset 8-hour shifts:
+- 5am – 1pm
+- 6am – 2pm
+- 7am – 3pm
+- 8am – 4pm
+
+To change these, edit the buttons in the "Quick Select" section of `index.html`:
 
 ```html
-<button type="button" class="quick-btn" onclick="setQuickTime('05:30', '14:00')">5:30-2</button>
+<button type="button" class="quick-btn" onclick="setQuickTime('06:00', '14:00')">
+    <span class="shift-time">6am – 2pm</span>
+</button>
 ```
+
+The `setQuickTime()` function takes two parameters: start time and end time in 24-hour format (HH:MM).
 
 ### Change Timezone
 
-Edit this line in `GoogleAppsScript.js`:
+The default timezone is set to Mountain Time. Edit this line in `GoogleAppsScript.js`:
 
 ```javascript
 timeZone: 'America/Boise', // Change to your timezone
@@ -129,13 +148,13 @@ timeZone: 'America/Boise', // Change to your timezone
 
 Common options:
 - `America/Los_Angeles` (Pacific)
-- `America/Denver` (Mountain)  
+- `America/Denver` or `America/Boise` (Mountain)  
 - `America/Chicago` (Central)
 - `America/New_York` (Eastern)
 
-### Change Company Name
+### Add Your Company Name
 
-Edit the footer in `index.html`:
+The footer currently says "Time Tracking". To add your company name, edit the footer in `index.html`:
 
 ```html
 <footer>

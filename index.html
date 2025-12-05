@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="theme-color" content="#111111">
+    <meta name="description" content="Submit your daily work hours in seconds.">
+    <title>Time Card</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           DESIGN SYSTEM
+           Spacing: 8pt scale (8, 16, 24, 32, 40, 48)
+           Font: Work Sans (400, 500, 600)
+           Radius: 8px everywhere
+           Shadow: single elevation style
+        ======================================== */
+        
+        :root {
+            /* Colors */
+            --bg-primary: #111111;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #242424;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #FFD000;
+            --accent-hover: #E6BB00;
+            --error: #ef4444;
+            --success: #22c55e;
+            
+            /* Spacing (8pt grid) */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-5: 40px;
+            --space-6: 48px;
+            
+            /* Typography */
+            --font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-4xl: 2.5rem;
+            --line-height: 1.5;
+            
+            /* Radius */
+            --radius: 8px;
+            
+            /* Shadow */
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--text-base);
+            line-height: var(--line-height);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            background: var(--bg-secondary);
+            padding: var(--space-2) var(--space-3);
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .logo-icon {
+            font-size: var(--text-xl);
+        }
+
+        /* MAIN */
+        main {
+            flex: 1;
+            padding: var(--space-3);
+            max-width: 480px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        /* CARD */
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: var(--space-3);
+            box-shadow: var(--shadow);
+        }
+
+        .card-label {
+            font-size: var(--text-xs);
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-1);
+        }
+
+        .card-value {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* ERROR MESSAGE */
+        .error-message {
+            background: var(--error);
+            color: var(--text-primary);
+            padding: var(--space-2);
+            border-radius: var(--radius);
+            text-align: center;
+            font-weight: 500;
+            font-size: var(--text-sm);
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        /* FORM ELEMENTS */
+        .field-label {
+            font-size: var(--text-xs);
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-1);
+            display: block;
+        }
+
+        .text-input {
+            width: 100%;
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            padding: var(--space-2);
+            font-size: var(--text-base);
+            font-family: var(--font-family);
+            color: var(--text-primary);
+            transition: border-color 0.15s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .text-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* SHIFT BUTTONS */
+        .shift-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-1);
+        }
+
+        .shift-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            padding: var(--space-2);
+            font-size: var(--text-sm);
+            font-family: var(--font-family);
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            text-align: center;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+
+        .shift-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--bg-tertiary);
+        }
+
+        .shift-btn:active,
+        .shift-btn.selected {
+            border-color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        /* TIME INPUTS */
+        .time-row {
+            display: flex;
+            gap: var(--space-2);
+            align-items: flex-end;
+        }
+
+        .time-field {
+            flex: 1;
+        }
+
+        .time-input {
+            width: 100%;
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            padding: var(--space-2);
+            font-size: var(--text-lg);
+            font-family: var(--font-family);
+            font-weight: 500;
+            color: var(--text-primary);
+            text-align: center;
+            transition: border-color 0.15s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.5;
+            cursor: pointer;
+        }
+
+        .time-separator {
+            font-size: var(--text-lg);
+            color: var(--text-secondary);
+            padding-bottom: var(--space-2);
+        }
+
+        /* HOURS DISPLAY */
+        .hours-display {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: var(--space-3);
+            text-align: center;
+        }
+
+        .hours-label {
+            font-size: var(--text-xs);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.7;
+            margin-bottom: var(--space-1);
+        }
+
+        .hours-value {
+            font-size: var(--text-4xl);
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .hours-unit {
+            font-size: var(--text-base);
+            font-weight: 500;
+            opacity: 0.7;
+            margin-left: 4px;
+        }
+
+        /* NOTES */
+        .notes-input {
+            width: 100%;
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            padding: var(--space-2);
+            font-size: var(--text-base);
+            font-family: var(--font-family);
+            color: var(--text-primary);
+            resize: none;
+            min-height: 72px;
+            transition: border-color 0.15s ease;
+        }
+
+        .notes-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .notes-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* SUBMIT BUTTON */
+        .submit-btn {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: var(--radius);
+            padding: var(--space-3);
+            font-size: var(--text-lg);
+            font-family: var(--font-family);
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-1);
+            min-height: 56px;
+            transition: background-color 0.15s ease;
+            margin-top: auto;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.99);
+        }
+
+        .submit-btn:disabled {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* LOADING STATE */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--bg-primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* SUCCESS SCREEN */
+        .success-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--success);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-3);
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: var(--space-3);
+        }
+
+        .success-title {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--bg-primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .success-details {
+            font-size: var(--text-base);
+            color: rgba(0, 0, 0, 0.6);
+            margin-bottom: var(--space-5);
+        }
+
+        .reset-btn {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: none;
+            border-radius: var(--radius);
+            padding: var(--space-2) var(--space-4);
+            font-size: var(--text-base);
+            font-family: var(--font-family);
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.15s ease;
+        }
+
+        .reset-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: var(--space-2);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: var(--text-xs);
+        }
+
+        /* UTILITY */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <span class="logo-icon">⏱</span>
+            <span class="logo">Time Card</span>
+        </div>
+    </header>
+
+    <main id="mainForm">
+        <!-- Date -->
+        <div class="card">
+            <div class="card-label">Today</div>
+            <div class="card-value" id="currentDate"></div>
+        </div>
+
+        <!-- Error -->
+        <div class="error-message" id="errorMsg"></div>
+
+        <!-- Name -->
+        <div class="card">
+            <label class="field-label" for="workerName">Your Name</label>
+            <input 
+                type="text" 
+                class="text-input" 
+                id="workerName" 
+                placeholder="Enter your name"
+                autocomplete="name"
+                autocapitalize="words"
+            >
+        </div>
+
+        <!-- Quick Shifts -->
+        <div class="card">
+            <label class="field-label">Select 8-Hour Shift</label>
+            <div class="shift-grid">
+                <button type="button" class="shift-btn" onclick="setQuickTime('05:00', '13:00', this)">5am – 1pm</button>
+                <button type="button" class="shift-btn" onclick="setQuickTime('06:00', '14:00', this)">6am – 2pm</button>
+                <button type="button" class="shift-btn" onclick="setQuickTime('07:00', '15:00', this)">7am – 3pm</button>
+                <button type="button" class="shift-btn" onclick="setQuickTime('08:00', '16:00', this)">8am – 4pm</button>
+            </div>
+        </div>
+
+        <!-- Manual Time Entry -->
+        <div class="card">
+            <label class="field-label">Or Enter Manually</label>
+            <div class="time-row">
+                <div class="time-field">
+                    <input type="time" class="time-input" id="timeIn" value="07:00">
+                </div>
+                <span class="time-separator">→</span>
+                <div class="time-field">
+                    <input type="time" class="time-input" id="timeOut" value="15:00">
+                </div>
+            </div>
+        </div>
+
+        <!-- Hours -->
+        <div class="hours-display">
+            <div class="hours-label">Total Hours</div>
+            <div class="hours-value">
+                <span id="hoursValue">8</span><span class="hours-unit">hrs</span>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="card">
+            <label class="field-label" for="notes">Notes (optional)</label>
+            <textarea 
+                class="notes-input" 
+                id="notes" 
+                placeholder="Weather, equipment, delays..."
+                rows="2"
+            ></textarea>
+        </div>
+
+        <!-- Submit -->
+        <button type="button" class="submit-btn" id="submitBtn" onclick="submitTime()">
+            <span id="btnText">Submit Time</span>
+        </button>
+    </main>
+
+    <!-- Success -->
+    <div class="success-screen hidden" id="successScreen">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Time Submitted</div>
+        <div class="success-details" id="successDetails"></div>
+        <button class="reset-btn" onclick="resetForm()">Submit Another</button>
+    </div>
+
+    <footer>Time Tracking</footer>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0QXHZ_zeFV7grcNtQysnXOCETZUh9IZLHT05OXhPfGxhORXJ7MeCvjCbTJ9ayk3Pw/exec';
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            setCurrentDate();
+            calculateHours();
+            loadSavedName();
+            
+            document.getElementById('timeIn').addEventListener('change', () => {
+                clearShiftSelection();
+                calculateHours();
+            });
+            document.getElementById('timeOut').addEventListener('change', () => {
+                clearShiftSelection();
+                calculateHours();
+            });
+            document.getElementById('workerName').addEventListener('blur', saveName);
+        });
+
+        // ============================================
+        // FUNCTIONS
+        // ============================================
+        function setCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        function calculateHours() {
+            const timeIn = document.getElementById('timeIn').value;
+            const timeOut = document.getElementById('timeOut').value;
+            
+            if (!timeIn || !timeOut) {
+                document.getElementById('hoursValue').textContent = '0';
+                return 0;
+            }
+            
+            const [inHour, inMin] = timeIn.split(':').map(Number);
+            const [outHour, outMin] = timeOut.split(':').map(Number);
+            
+            let totalMinutes = (outHour * 60 + outMin) - (inHour * 60 + inMin);
+            if (totalMinutes < 0) totalMinutes += 24 * 60;
+            
+            const hours = totalMinutes / 60;
+            const displayHours = Math.round(hours * 10) / 10;
+            
+            document.getElementById('hoursValue').textContent = displayHours;
+            return hours;
+        }
+
+        function setQuickTime(start, end, btn) {
+            document.getElementById('timeIn').value = start;
+            document.getElementById('timeOut').value = end;
+            calculateHours();
+            
+            // Update selection state
+            document.querySelectorAll('.shift-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function clearShiftSelection() {
+            document.querySelectorAll('.shift-btn').forEach(b => b.classList.remove('selected'));
+        }
+
+        function saveName() {
+            const name = document.getElementById('workerName').value.trim();
+            if (name) {
+                localStorage.setItem('workerName', name);
+            }
+        }
+
+        function loadSavedName() {
+            const savedName = localStorage.getItem('workerName');
+            if (savedName) {
+                document.getElementById('workerName').value = savedName;
+            }
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMsg');
+            errorEl.textContent = message;
+            errorEl.classList.add('visible');
+            errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            setTimeout(() => {
+                errorEl.classList.remove('visible');
+            }, 4000);
+        }
+
+        function setLoading(isLoading) {
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            
+            if (isLoading) {
+                btn.disabled = true;
+                btnText.innerHTML = '<div class="spinner"></div>';
+            } else {
+                btn.disabled = false;
+                btnText.textContent = 'Submit Time';
+            }
+        }
+
+        async function submitTime() {
+            const name = document.getElementById('workerName').value.trim();
+            const timeIn = document.getElementById('timeIn').value;
+            const timeOut = document.getElementById('timeOut').value;
+            const notes = document.getElementById('notes').value.trim();
+            const hours = calculateHours();
+            const date = new Date().toLocaleDateString('en-US');
+            
+            // Validation
+            if (!name) {
+                showError('Please enter your name');
+                document.getElementById('workerName').focus();
+                return;
+            }
+            
+            if (!timeIn || !timeOut) {
+                showError('Please enter start and end times');
+                return;
+            }
+            
+            if (hours <= 0 || hours > 24) {
+                showError('Please check your times');
+                return;
+            }
+
+            setLoading(true);
+            
+            const formData = {
+                date: date,
+                name: name,
+                jobSite: '',
+                timeIn: timeIn,
+                timeOut: timeOut,
+                hours: Math.round(hours * 100) / 100,
+                notes: notes,
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                showSuccess(name, hours);
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                showError('Submission failed. Please try again.');
+                setLoading(false);
+            }
+        }
+
+        function showSuccess(name, hours) {
+            document.getElementById('mainForm').classList.add('hidden');
+            document.querySelector('footer').classList.add('hidden');
+            document.getElementById('successScreen').classList.remove('hidden');
+            document.getElementById('successDetails').textContent = `${name} • ${hours} hours`;
+        }
+
+        function resetForm() {
+            document.getElementById('successScreen').classList.add('hidden');
+            document.getElementById('mainForm').classList.remove('hidden');
+            document.querySelector('footer').classList.remove('hidden');
+            
+            setLoading(false);
+            document.getElementById('notes').value = '';
+            clearShiftSelection();
+            setCurrentDate();
+        }
+    </script>
+</body>
+</html>

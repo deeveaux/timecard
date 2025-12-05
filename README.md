@@ -1,4 +1,4 @@
-# 🏗️ Construction Time Card App
+## 🏗️ Construction Time Card App
 
 A dead-simple, mobile-first time tracking app for construction workers that dumps data directly to Google Sheets.
 
@@ -107,19 +107,6 @@ Either method auto-calculates total hours. Workers add optional notes, then hit 
 
 ## ⚙️ Customization
 
-### Change Job Sites
-
-Edit the `<select>` options in `index.html`:
-
-```html
-<select class="job-select" id="jobSite">
-    <option value="">Select a job site...</option>
-    <option value="Your Project 1">Your Project 1</option>
-    <option value="Your Project 2">Your Project 2</option>
-    <!-- Add more as needed -->
-</select>
-```
-
 ### Change Quick Shift Buttons
 
 The app includes four preset 8-hour shifts:
@@ -172,7 +159,7 @@ Each submission creates a row with:
 |--------|------|
 | Date | Date worked (e.g., 12/4/2025) |
 | Name | Worker's name |
-| Job Site | Selected project/location |
+| Job Site | (blank, reserved for future use) |
 | Time In | Start time |
 | Time Out | End time |
 | Hours | Calculated decimal hours |
@@ -217,11 +204,3 @@ Each submission creates a row with:
 ---
 
 ## Need Help?
-
-This app is intentionally simple. If you need more features like:
-- GPS verification
-- Photo attachments  
-- Manager approvals
-- Integration with payroll systems
-
-...you'll want to explore dedicated time tracking solutions like Busybusy, ClockShark, or TSheets.
